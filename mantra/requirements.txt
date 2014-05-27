@@ -1,0 +1,4 @@
+SQLAlchemy==0.9.4
+argparse==1.2.1
+cx-Oracle==5.1.2
+wsgiref==0.1.2

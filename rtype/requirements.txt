@@ -1,0 +1,7 @@
+argparse==1.2.1
+asq==1.0
+click==1.0
+fake-factory==0.4.0
+jdcal==1.0
+openpyxl==2.0.3
+wsgiref==0.1.2
