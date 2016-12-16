@@ -4,7 +4,7 @@
 #+Email: jj@gioorgi.com
 # ^c^v t to export code
 
-* RType: your fastest Relational database :tryout:
+* RType: your fastest Relational database :BETA:
 
 ** A table is described as a /set/ of column names only
 Internally the system can be meta-described by ordered set.
@@ -65,45 +65,8 @@ RType core is based on embedded SQLite
 ** RType did not delete :beta:
 RType mark elements for deletation only. 
 An async job re-build tables when system is on low load.
-** RType system can manage load peaks, but not constant load peaks
-In low-load condition RType do the following actions:
-1. Try to reduce to zero the async queue
-2. 
-** No polling: Simple Event engine
-RType provide also a event-listener model to attach event to set modifications like:
-+ addition of a new element
-+ mark-removal of an element
-** RType has no transactional semantic :beta:
-Storing data has a fixed, predictive cost.
-** RType has no replication policy :beta:
-Client library manage a pool of replicated RType system.
-RType has a async operation model in which all operations are asyncronous.
-A standard way of ensuing operation is to do a cascate set of async
-operation, one after one.
-
 ** RType storage engine is pluggable. 
 The reference implementation provide a very fast engine
-** Symbolic language support
-RType is based on /atoms/ which are unique in the system.
-
-
-* TODO RType secret trick: optimal for simple relational database     :resee:
-If you have a simple relational database, with a lot of one-to-many relations you can use RType to get the job done.
-A small SQL-like declarative language is provided in RType for easy access:
-
-#+begin_src js
- db=RType.openDB("RType","root","toor")
- db.add("myfriends", "jresig","bgates")
- db.add("yourfirends", "jresing", "gking")
- db.add("guy-description:jresing", "JQuery Master and Commander")
- db.select("gui-description:*").from(db.select("*").from("myfriend"))
-=>
- ["JQuery Master and Commander"]
-#+end_src
-
-Many2Many relations can be mapped via two pairs of one-to-many relations.
-
-
 * Reference
 
 1) http://research.swtch.com/sparse
