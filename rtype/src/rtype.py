@@ -15,7 +15,7 @@
 Minimum Required:Python 2.7.6
 
 Support
-https://code.google.com/p/asq/
+https://github.com/sixty-north/asq
 linq-like for python (over 40 functions)
 
 
@@ -23,7 +23,7 @@ linq-like for python (over 40 functions)
 Demo:
  you organize a simple people/friend/place stuff
 then you start filling it with data, and when data growth, the system accomodate it
- displacing data into different
+ displacing data into different storages
 
 """
 

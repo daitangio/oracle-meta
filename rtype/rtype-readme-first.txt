@@ -3,63 +3,91 @@
 #+Author: Giovanni Giorgi
 #+Email: jj@gioorgi.com
 # ^c^v t to export code
-*  Wellcome to RType!
 
+* RType: your fastest Relational database :tryout:
 
+** A table is described as a /set/ of column names only
+Internally the system can be meta-described by ordered set.
 
-+ Data are opaque entity, without nulls, and with distinct values
-+ Data are accessed via /Views/
-+ Views are bi-dimensional relations
-For instance, the file system can be accessed via a View:
-
-#+BEGIN_SRC python :tangle rtypeV1.py
-  #!/bin/env python
-  # Example1
-  import sys
-  sys.path.append("src")
-  
-  from rtype import view
-  def select(view,fname,size):
-      result=view.orderby(fname)
-      for line in result:
-          print line.fname,line.size      
-  # Pass the meta-select function to the viewbuilder
-  view('filesystem:/var/',select);
-  
-  # Example2
-  # Gropup people by birthplace:
-  #def group(view,name,  
+#+BEGIN_SRC js
+  db=RType.openDB(":memory:");
+  db.createTable("person", "person_id","name","surname","birdth_dt");
+  // II  declaration form:
+  db.createTable({
+      "house":[
+          "location",
+          "owner_person_id"
+      ],
+      "car": [
+          "engine_cc_n",
+          "year_dt",
+          "owner_person_id"
+      ]    
+  });
+  w=db.getInsertWorker(); // <- Autobild a magical interface to your tables, baby
+  w.insertOnPerson(1,"Bob","Testy", "19740423");
 #+END_SRC
-In RType, data can grow to disk without problem.
-The RType system will provide the best relational adapter system (memory, RDBMS, NoSQL db, etc) based on growth usage
+Please observe:
+1) For every database a Worker is provided
+2) The worker is a typed (somewhat) interface, so you must /know/ at
+"design" (compile) time the table names (at least).
+3) You must always provide your table declaration, or your system will
+   not work at all.
+4) You can provide a partial table declaration (only the segment you
+   need):
+#+BEGIN_SRC js2
+  db=RType.openDB(":memory:").getWorkerFor(
+      {    "car":
+           [ "engine_cc_n","year_dt","model","owner_person_id"]
+      }
+  ).insertOnCar(1200,"19990101","FordFiesta",1);
+#+END_SRC
 
-Internally RType will guarantee the best efficent way to store the data.
-RType is aimed to provied maximum performance for the following operation: put, get, intersect, union
-Removal is a lazy operation, and will be performed as suboptimal task.
+** You must define a set of Regular expression to tie your model
+Foreign keys and type are identified by convention:
+For example:
+*** $name_id -> integer, primary key or foriegn key
+*** $n_flg   -> boolean (0,1)
+*** $number_n -> number value (internally stored as string)
+*** $date_dt -> iso date  (internally stored as string yyyymmdd)
+*** $timestamp_ts -> date + time n GMT format yyymmdd-hhmmss.xyz...
+*** $othername -> strings with 4000 char limit
 
 
 
-* No polling: Simple Event engine
+
+
+
+** Foreign Key are not enforced
+You can proibit insert (dev mode) or allow them (production, less-rigid mode).
+** RType is a relationa database supporting joins
+RType core is based on embedded SQLite
+** RType did not delete :beta:
+RType mark elements for deletation only. 
+An async job re-build tables when system is on low load.
+** RType system can manage load peaks, but not constant load peaks
+In low-load condition RType do the following actions:
+1. Try to reduce to zero the async queue
+2. 
+** No polling: Simple Event engine
 RType provide also a event-listener model to attach event to set modifications like:
 + addition of a new element
-+ removal of an element
++ mark-removal of an element
+** RType has no transactional semantic :beta:
+Storing data has a fixed, predictive cost.
+** RType has no replication policy :beta:
+Client library manage a pool of replicated RType system.
+RType has a async operation model in which all operations are asyncronous.
+A standard way of ensuing operation is to do a cascate set of async
+operation, one after one.
 
-* Concurrent: multi process on shared file system
+** RType storage engine is pluggable. 
+The reference implementation provide a very fast engine
+** Symbolic language support
+RType is based on /atoms/ which are unique in the system.
 
 
-
-
-When you define a RType database you must specify the maximum key length you care about.
-The key length is fixed for performance reason and will directly affect some storage performance.
-
-
-
-
-
-RType storage engine is pluggable. 
-The reference implementation provide a very fast engine and a trasactional-optional engine (altrougth based on a Global Lock).
-
-* RType secret trick: optimal for simple relational database
+* TODO RType secret trick: optimal for simple relational database     :resee:
 If you have a simple relational database, with a lot of one-to-many relations you can use RType to get the job done.
 A small SQL-like declarative language is provided in RType for easy access:
 
@@ -74,77 +102,6 @@ A small SQL-like declarative language is provided in RType for easy access:
 #+end_src
 
 Many2Many relations can be mapped via two pairs of one-to-many relations.
-
-
-* API
-
-
-
-
-* IDEA2
-** Symbol is a declarative language...
-with imperative nature.
-
-
-The expression can contain 2-dimensional relation
-
-#+BEGIN_SRC text
-
-Hello_world.string().print()
-=> "Hello world"
-
-
-person[name,age] = 'Nick,'47, 'Clara,'23
-person[name,age].orderby(age).count()
-
-// Lambda guy:
-(int x) -> x * x
-(int x) -> { ..... }
-
-#+END_SRC
-
-
-comma ',' is used to separate data.
-' is used to quote symbol. Quoted symbol can be seen as string (anyway they are unique).
-
-Escape is obtained via the '\' char
-So a comma string is 
-
-'\,, 
-
-
-Quoted symbol are string.
-String can be transformed into symbol with the symbol function
-
-Nick == ('Nick).symbol()
-
-And symbol can be stringified via string() function so
-
-Nick.string() == "Nick" == 'Nick
-
-Nick.string().symbol() == Nick
-
-
-Function are directly applied to types, 
-
-** File are data, data are files
-In symbol file system primitive and data is the same.
-You can usually access to file system via a relational view, using a special function wich remap file system:
-
-#+BEGIN_SRC text
-fs('/home/jj')[name,creation_time].print()
-#+END_SRC
-
-The [ ] is the "select" operator which remap
-
-
-
-
-
-
-
-
-
 
 
 * Reference
