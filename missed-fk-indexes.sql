@@ -1,8 +1,9 @@
 column columns format a30 word_wrapped
 column tablename format a15 word_wrapped
-column constraint_name format a15 word_wrapped
+column constraint_name format a28 word_wrapped
 
 prompt Foreign key unindexed can lead to full table lock
+prompt Analysis is orderd by column name to find out common structurs
 select table_name, constraint_name,
      cname1 || nvl2(cname2,','||cname2,null) ||
      nvl2(cname3,','||cname3,null) || nvl2(cname4,','||cname4,null) ||
@@ -39,5 +40,6 @@ select table_name, constraint_name,
               and i.column_position <= cons.col_cnt
             group by i.index_name
          )
+order by columns, table_name;         
 /
 
