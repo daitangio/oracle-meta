@@ -7,6 +7,10 @@ A set of experimental script to deal with Oracle database
 and some new idea about meta programming.
 
 
+pocket-oracle
+==============
+Dockerized oracle
+
 
 RType
 ==============
